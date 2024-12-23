@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repositorio de OSINT e Inteligencia Cibernética</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* General Styling */
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+            color: #ffffff;
+            font-family: 'Roboto Mono', monospace;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        header {
+            position: absolute;
+            top: 10px;
+            text-align: center;
+        }
+
+        header h1 {
+            color: #00ffab;
+            margin: 0;
+        }
+
+        #searchBar {
+            margin-top: 10px;
+            padding: 10px;
+            width: 60%;
+            border: 2px solid #333;
+            border-radius: 5px;
+            background: #1a1a2e;
+            color: #ffffff;
+            transition: border 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #searchBar:focus {
+            border-color: #00ffab;
+            outline: none;
+            box-shadow: 0 0 10px #00ffab;
+        }
+
+        /* Grid Layout */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            padding: 20px;
+            max-width: 80%;
+        }
+
+        .grid-item {
+            background: rgba(31, 31, 46, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            text-align: center;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .grid-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .grid-item i {
+            font-size: 2rem;
+            color: #00ffab;
+            margin-bottom: 10px;
+        }
+
+        /* Popup Styling */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            z-index: 1000;
+        }
+
+        .popup-overlay.show {
+            display: block;
+        }
+
+        .popup {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: #1f1f2e;
+            border-radius: 10px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+            width: 50%;
+            max-height: 70%;
+            overflow-y: auto;
+            padding: 20px;
+            z-index: 1001;
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .popup.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .popup h2 {
+            margin: 0 0 20px;
+            color: #00ffab;
+        }
+
+        .popup a {
+            display: block;
+            color: #00ffab;
+            margin-bottom: 10px;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .popup a:hover {
+            text-decoration: underline;
+        }
+
+        .popup .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Repositorio de OSINT e Inteligencia Cibernética</h1>
+        <input type="text" id="searchBar" placeholder="🔍 Buscar herramientas o recursos">
+    </header>
+
+    <div class="grid-container">
+        <!-- Cada categoría -->
+        <div class="grid-item" onclick="openPopup('basic-musts')">
+            <i class="fas fa-book"></i>
+            <p>Basic & Musts</p>
+        </div>
+        <div class="grid-item" onclick="openPopup('osint')">
+            <i class="fas fa-search"></i>
+            <p>OSINT</p>
+        </div>
+        <div class="grid-item" onclick="openPopup('facebook-tools')">
+            <i class="fab fa-facebook"></i>
+            <p>Facebook Tools</p>
+        </div>
+        <div class="grid-item" onclick="openPopup('twitter-tools')">
+            <i class="fab fa-twitter"></i>
+            <p>Twitter Tools</p>
+        </div>
+        <div class="grid-item" onclick="openPopup('google-tools')">
+            <i class="fas fa-google"></i>
+            <p>Google Tools</p>
+        </div>
+        <div class="grid-item" onclick="openPopup('breach-leak')">
+            <i class="fas fa-user-secret"></i>
+            <p>Breach & Leak</p>
+        </div>
+        <div class="grid-item" onclick="openPopup('vulnerabilities')">
+            <i class="fas fa-bug"></i>
+            <p>Vulnerabilities</p>
+        </div>
+        <div class="grid-item" onclick="openPopup('email-intel')">
+            <i class="fas fa-envelope"></i>
+            <p>Email Intel</p>
+        </div>
+        <div class="grid-item" onclick="openPopup('web-analysis')">
+            <i class="fas fa-globe"></i>
+            <p>Web Analysis</p>
+        </div>
+        <div class="grid-item" onclick="openPopup('domain-ip-analysis')">
+            <i class="fas fa-server"></i>
+            <p>Domain & IP Analysis</p>
+        </div>
+        <div class="grid-item" onclick="openPopup('bgp-seeker')">
+            <i class="fas fa-route"></i>
+            <p>BGP Seeker</p>
+        </div>
+        <div class="grid-item" onclick="openPopup('dettect')">
+            <i class="fas fa-crosshairs"></i>
+            <p>DeTTECT</p>
+        </div>
+        <div class="grid-item" onclick="openPopup('iocs')">
+            <i class="fas fa-list-alt"></i>
+            <p>IOC's</p>
+        </div>
+        <div class="grid-item" onclick="openPopup('vendors-blogs')">
+            <i class="fas fa-rss"></i>
+            <p>Vendor's Blogs</p>
+        </div>
+        <div class="grid-item" onclick="openPopup('cve-search')">
+            <i class="fas fa-search-plus"></i>
+            <p>CVE Search</p>
+        </div>
+        <div class="grid-item" onclick="openPopup('ransomware')">
+            <i class="fas fa-lock"></i>
+            <p>Ransomware</p>
+        </div>
+        <div class="grid-item" onclick="openPopup('malware')">
+            <i class="fas fa-virus"></i>
+            <p>Malware</p>
+        </div>
+        <div class="grid-item" onclick="openPopup('attack-surface')">
+            <i class="fas fa-shield-alt"></i>
+            <p>Attack Surface</p>
+        </div>
+        <div class="grid-item" onclick="openPopup('reddit')">
+            <i class="fab fa-reddit"></i>
+            <p>Reddit</p>
+        </div>
+        <div class="grid-item" onclick="openPopup('cosas-extra')">
+            <i class="fas fa-star"></i>
+            <p>Cosas Extra</p>
+        </div>        
+    </div>
+
+    <!-- Popup dinámico -->
+    <div class="popup-overlay" id="popup-overlay" onclick="closePopup()">
+        <div class="popup" id="popup" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closePopup()">&times;</button>
+            <h2 id="popup-title"></h2>
+            <div id="popup-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // Objeto de datos donde se define el contenido de cada categoría
+        const data = {
+    "basic-musts": {
+        title: "Basic & Musts",
+        links: [
+            { text: "Cyber Threat Intelligence for Beginners", url: "https://blog.bushidotoken.net/2024/10/cyber-threat-intelligence-for.html" },
+            { text: "Art Toolkit", url: "https://arttoolkit.github.io/" },
+            { text: "Cipher387 GitHub", url: "https://github.com/cipher387" },
+            { text: "Ethical Hacking Tools", url: "https://www.hackerone.com/ethical-hacker/100-hacking-tools-and-resources" },
+            { text: "Cybersources", url: "https://github.com/brunoooost/cybersources" }
+        ]
+    },
+    "osint": {
+        title: "OSINT",
+        links: [
+            { text: "OSINT Framework", url: "https://osintframework.com/" },
+            { text: "OSINT4All", url: "https://start.me/p/L1rEYQ/osint4all" },
+            { text: "GEOINT", url: "https://start.me/p/W1kDAj/geoint" },
+            { text: "Threat Hunting", url: "https://start.me/p/OmOrJb/threat-hunting" }
+        ]
+    },
+    "facebook-tools": {
+        title: "Facebook Tools",
+        links: [
+            { text: "Graph Tips Beta", url: "https://graph.tips/beta/" },
+            { text: "Who Posted What", url: "https://whopostedwhat.com/" },
+            { text: "Compare Facebook Friendships", url: "https://www.taringa.net/+hazlo_tu_mismo/ver-amistad-compara-amistades-de-facebook-sin-ser-amigos_12npxb" },
+            { text: "PeopleFindThor", url: "https://peoplefindthor.dk/" },
+            { text: "Lookup-ID", url: "https://lookup-id.com/" }
+        ]
+    },
+    "twitter-tools": {
+        title: "Twitter Tools",
+        links: [
+            { text: "Twitter Advanced Search", url: "https://twitter.com/search-advanced" },
+            { text: "Recruitin Twitter Search", url: "https://recruitin.net/twitter.php" },
+            { text: "Twitonomy", url: "https://www.twitonomy.com/" },
+            { text: "All My Tweets", url: "https://www.allmytweets.net/connect/" },
+            { text: "Tinfoleak", url: "https://tinfoleak.com/" },
+            { text: "SocialBearing", url: "https://socialbearing.com/" },
+            { text: "Followerwonk Compare", url: "https://followerwonk.com/compare" },
+            { text: "Foller.me", url: "https://foller.me/" },
+            { text: "Twiangulate", url: "https://www.twiangulate.com/search/" },
+            { text: "TweeterID", url: "https://tweeterid.com/" }
+        ]
+    },
+    "google-tools": {
+        title: "Google Tools",
+        links: [
+            { text: "Google Dork List", url: "https://www.boxpiper.com/posts/google-dork-list-files-password" },
+            { text: "Google Translate", url: "https://translate.google.com/" },
+            { text: "Google Keep", url: "https://keep.google.com/u/0/" },
+            { text: "CyberChef", url: "https://gchq.github.io/CyberChef/" },
+            { text: "Onion Search Engine", url: "https://as.onionsearchengine.com/" },
+            { text: "Records Finder", url: "https://recordsfinder.com/" },
+            { text: "API Layer Number Verification", url: "https://apilayer.com/marketplace/number_verification-api?live_demo=show" },
+            { text: "OnlineSim", url: "https://onlinesim.io/v2/numbers/" },
+            { text: "Onyphe", url: "https://onyphe.io/" }
+        ]
+    },
+    "breach-leak": {
+        title: "Breach & Leak",
+        links: [
+            { text: "Dehashed", url: "https://dehashed.com/" },
+            { text: "LeakIX", url: "https://leakix.net/" },
+            { text: "Pastebin", url: "https://pastebin.com/" },
+            { text: "Leak Lookup Databases", url: "https://leak-lookup.com/databases" },
+            { text: "RocketReach", url: "https://rocketreach.co/person" },
+            { text: "Skymem", url: "https://www.skymem.info/" },
+            { text: "Hashbin", url: "https://hashb.in/" },
+            { text: "IntelX", url: "https://intelx.io/account?tab=developer" },
+            { text: "Snusbase", url: "https://snusbase.com/search" },
+            { text: "Aleph", url: "https://aleph.occrp.org/notifications" },
+            { text: "PublicWWW", url: "https://publicwww.com/" }
+        ]
+    },
+    "vulnerabilities": {
+        title: "Vulnerabilities",
+        links: [
+            { text: "OpenCVE", url: "https://www.opencve.io/login" },
+            { text: "CVE Details", url: "https://www.cvedetails.com/" },
+            { text: "NVD Vulnerabilities", url: "https://nvd.nist.gov/vuln/search" },
+            { text: "Zeroday Initiative", url: "https://www.zerodayinitiative.com/portal/bulletins/" },
+            { text: "HackerTarget", url: "https://hackertarget.com/" }
+        ]
+    },
+    "email-intel": {
+        title: "Email Intel",
+        links: [
+            { text: "EmailRep", url: "https://emailrep.io/" },
+            { text: "MXToolBox", url: "https://mxtoolbox.com/" },
+            { text: "Message Header Analyzer", url: "https://toolbox.googleapps.com/apps/messageheader/" },
+            { text: "Truemail", url: "https://trumail.io/" },
+            { text: "OMail", url: "https://omail.io/" },
+            { text: "TrashMail", url: "https://trashmail.com/" },
+            { text: "Learn DMARC", url: "https://www.learndmarc.com/#" }
+        ]
+    },
+    "web-analysis": {
+        title: "Web Analysis",
+        links: [
+            { text: "Web Check", url: "https://web-check.as93.net/" },
+            { text: "URLScan", url: "https://urlscan.io/" },
+            { text: "AbuseIPDB", url: "https://www.abuseipdb.com/" },
+            { text: "IPVoid", url: "https://www.ipvoid.com/" },
+            { text: "SynapsInt", url: "https://synapsint.com/index.php" },
+            { text: "DNSDumpster", url: "https://dnsdumpster.com/" },
+            { text: "crt.sh", url: "https://crt.sh/" }
+        ]
+    },
+    "domain-ip-analysis": {
+        title: "Domain & IP Analysis",
+        links: [
+            { text: "Domain Dossier", url: "https://centralops.net/co/DomainDossier.aspx" },
+            { text: "Whoxy", url: "https://www.whoxy.com/" },
+            { text: "ViewDNS", url: "https://viewdns.info/" },
+            { text: "AbuseIPDB", url: "https://www.abuseipdb.com/" },
+            { text: "Awesome IP Search Engines", url: "https://github.com/cipher387/awesome-ip-search-engines?tab=readme-ov-file" },
+            { text: "Criminal IP", url: "https://www.criminalip.io/" },
+            { text: "Netify", url: "https://www.netify.ai/resources" },
+            { text: "Whois Webform", url: "https://whois-webform.markmonitor.com/whois/" },
+            { text: "Whois DomainTools", url: "https://whois.domaintools.com/" }
+        ]
+    },
+    "bgp-seeker": {
+        title: "BGP Seeker",
+        links: [
+            { text: "RouteServers", url: "https://www.routeservers.org/" },
+            { text: "Cisco Crosswork", url: "https://crosswork.cisco.com/#/signup" },
+            { text: "RIPE Stat", url: "https://stat.ripe.net/app/launchpad" },
+            { text: "BGP HE.net", url: "https://bgp.he.net/" },
+            { text: "BGPlay", url: "https://bgplay.massimocandela.com/" },
+            { text: "PeeringDB", url: "https://www.peeringdb.com/" },
+            { text: "Shodan", url: "https://www.shodan.io/" },
+            { text: "Spyse", url: "https://spyse.com/" },
+            { text: "Wigle", url: "https://wigle.net/" },
+            { text: "crt.sh", url: "https://crt.sh/" },
+            { text: "IVRE", url: "https://ivre.rocks/" },
+            { text: "Vulners", url: "https://vulners.com/" }
+        ]
+    },
+    "dettect": {
+        title: "DeTTECT",
+        links: [
+            { text: "DeTTECT GitHub", url: "https://github.com/rabobank-cdc/DeTTECT?tab=readme-ov-file" },
+            { text: "DeTTECT Editor", url: "https://rabobank-cdc.github.io/dettect-editor/#/home" },
+            { text: "DeTTECT Medium Article", url: "https://medium.com/@reotmani/dettect-70db2d219bde" }
+        ]
+    },
+    "iocs": {
+        title: "IOC's",
+        links: [
+            { text: "URLHaus", url: "https://urlhaus.abuse.ch/browse/" },
+            { text: "ThreatFox", url: "https://threatfox.abuse.ch/browse/" },
+            { text: "IOCFeed", url: "https://iocfeed.mrlooquer.com/" },
+            { text: "OpenPhish", url: "https://openphish.com/" },
+            { text: "OTX AlienVault", url: "https://otx.alienvault.com/browse/global/pulses?include_inactive=0&sort=-modified&page=1&limit=10" },
+            { text: "Phishunt", url: "https://phishunt.io/" },
+            { text: "Tria.ge", url: "https://tria.ge/s?q=family%3Amirai&offset=2022-07-20T19%3A42%3A03.94094Z&back=true&limit=50&button=" },
+            { text: "URLHaus Page 0", url: "https://urlhaus.abuse.ch/browse/page/0/" },
+            { text: "SSC Threat Intel IoCs", url: "https://github.com/securityscorecard/SSC-Threat-Intel-IoCs" },
+            { text: "TweetFeed", url: "https://tweetfeed.live/dashboard.html" },
+            { text: "ThreatMiner", url: "https://www.threatminer.org/index.php" },
+            { text: "Cybercrime Tracker", url: "https://cybercrime-tracker.net/" },
+            { text: "URLHaus", url: "https://urlhaus.abuse.ch/" },
+            { text: "Abuse.ch", url: "https://abuse.ch/" },
+            { text: "Is It Phishing", url: "https://isitphishing.org/" },
+            { text: "IsItPhish", url: "https://www.isitphish.com/" },
+            { text: "GreyNoise", url: "https://www.greynoise.io/" },
+            { text: "GreyNoise Viz Cheat Sheet", url: "https://www.greynoise.io/viz/cheat-sheet/" },
+            { text: "Spamhaus Check", url: "https://check.spamhaus.org/" }
+        ]
+    },
+    "vendors-blogs": {
+        title: "Vendor's Blogs",
+        links: [
+            { text: "Fortinet PSIRT Blogs", url: "https://www.fortinet.com/blog/psirt-blogs" },
+            { text: "Cisco Cloud Security", url: "https://sec.cloudapps.cisco.com/security/center/publicationListing.x" },
+            { text: "Wordfence Threat Intel", url: "https://www.wordfence.com/threat-intel/vulnerabilities/" },
+            { text: "CVE Details", url: "https://www.cvedetails.com/" },
+            { text: "Okta Security Articles", url: "https://sec.okta.com/articles" },
+            { text: "SEKOIA Blog", url: "https://blog.sekoia.io/" },
+            { text: "Talos Intelligence", url: "https://talosintelligence.com/" }
+        ]
+    },
+    "cve-search": {
+        title: "CVE Search",
+        links: [
+            { text: "Data Breach Today", url: "https://www.databreachtoday.asia/search.php?keywords=qatar#p-1" },
+            { text: "VulDB", url: "https://vuldb.com/fr/" },
+            { text: "Snyk Security", url: "https://security.snyk.io/" },
+            { text: "Snyk Atlassian CVE", url: "https://security.snyk.io/vuln/?search=atlassian" },
+            { text: "CVE Mitre", url: "https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=" },
+            { text: "Seebug", url: "https://www.seebug.org/" }
+        ]
+    },
+    "ransomware": {
+        title: "Ransomware",
+        links: [
+            { text: "Ransomwatch", url: "https://ransomwatch.telemetry.ltd/#/recentposts" },
+            { text: "BushidoUK Ransomware Gist", url: "https://gist.github.com/BushidoUK/d6e4ee6fc627f1b4a5fc3e5b6aa5fd36" },
+            { text: "DRM Report Q1 2023", url: "https://ransom.insicurezzadigitale.com/data/reports/2023/DRM-Report-Q1-2023-[ENG].pdf" },
+            { text: "CyberNews Ransomlooker", url: "https://cybernews.com/ransomlooker/" }
+        ]
+    },
+    "malware": {
+        title: "Malware",
+        links: [
+            { text: "VirusTotal", url: "https://www.virustotal.com/gui/home/upload" },
+            { text: "Tria.ge", url: "https://tria.ge/" },
+            { text: "Any.run", url: "https://app.any.run/" },
+            { text: "Malpedia", url: "https://malpedia.caad.fkie.fraunhofer.de/" },
+            { text: "AttackerKB", url: "https://attackerkb.com/about" },
+            { text: "JoeSandbox", url: "https://www.joesandbox.com/#windows" }
+        ]
+    },
+    "attack-surface": {
+        title: "Attack Surface",
+        links: [
+            { text: "Collidu Presentation", url: "https://www.collidu.com/presentation-attack-surface" },
+            { text: "Creately Diagram", url: "https://creately.com/diagram/example/irgbndqs1/attack-surface-classic" },
+            { text: "Dribbble Attack Surface", url: "https://dribbble.com/tags/attack-surface" },
+            { text: "GitHub Attack Surface Topics", url: "https://github.com/topics/attack-surface" },
+            { text: "OWASP Cheat Sheet", url: "https://cheatsheetseries.owasp.org/cheatsheets/Attack_Surface_Analysis_Cheat_Sheet.html" },
+            { text: "SketchBubble Presentation", url: "https://www.sketchbubble.com/en/presentation-attack-surface.html" },
+            { text: "BishopFox SmogCloud", url: "https://github.com/BishopFox/smogcloud" },
+            { text: "RossGeerlings Webstor", url: "https://github.com/RossGeerlings/webstor" },
+            { text: "Superhedgy AttackSurfaceMapper", url: "https://github.com/superhedgy/AttackSurfaceMapper" },
+            { text: "0xtavian Attack Surface Monitoring", url: "https://github.com/0xtavian/awesome-attack-surface-monitoring" },
+            { text: "3nock OTE", url: "https://github.com/3nock/OTE" },
+            { text: "Dreizehnutters Vide", url: "https://github.com/dreizehnutters/vide" },
+            { text: "ProjectDiscovery Uncover", url: "https://github.com/projectdiscovery/uncover" }
+        ]
+    },
+    "reddit": {
+        title: "Reddit",
+        links: [
+            { text: "Cybersecurity Subreddit", url: "https://www.reddit.com/r/cybersecurity/" },
+            { text: "PurpleTeamSec Subreddit", url: "https://www.reddit.com/r/purpleteamsec/" },
+            { text: "ThreatIntel Subreddit", url: "https://www.reddit.com/r/threatintel/" }
+        ]
+    },
+    "cosas-extra": {
+        title: "Cosas Extra",
+        links: [
+            { text: "Tool 1", url: "https://example.com/tool1" },
+            { text: "Tool 2", url: "https://example.com/tool2" },
+            { text: "Tool 3", url: "https://example.com/tool3" },
+            { text: "Tool 4", url: "https://example.com/tool4" },
+            { text: "Tool 5", url: "https://example.com/tool5" }
+        ]
+    },
+};
+
+
+function openPopup(category) {
+        const overlay = document.getElementById('popup-overlay');
+        const popup = document.getElementById('popup');
+        const title = document.getElementById('popup-title');
+        const content = document.getElementById('popup-content');
+        const categoryData = data[category];
+
+        title.textContent = categoryData.title; // Establece el título del popup
+        content.innerHTML = categoryData.links
+            .map(link => `<a href="${link.url}" target="_blank">${link.text}</a>`)
+            .join('');
+
+        overlay.classList.add('show');
+        popup.classList.add('show');
+    }
+
+    // Función para cerrar el popup
+    function closePopup() {
+        const overlay = document.getElementById('popup-overlay');
+        const popup = document.getElementById('popup');
+        overlay.classList.remove('show');
+        popup.classList.remove('show');
+    }
+
+    // Función de búsqueda
+    function searchResources() {
+        const query = document.getElementById('searchBar').value.toLowerCase();
+        const container = document.querySelector('.grid-container');
+
+        // Limpia el contenido de la cuadrícula
+        container.innerHTML = '';
+
+        // Itera sobre las categorías y filtra según la consulta
+        for (const categoryId in data) {
+            const category = data[categoryId];
+            const matchingLinks = category.links.filter(link =>
+                link.text.toLowerCase().includes(query) || category.title.toLowerCase().includes(query)
+            );
+
+            if (query === '' || matchingLinks.length > 0) {
+                // Crea una tarjeta para la categoría
+                const categoryCard = document.createElement('div');
+                categoryCard.classList.add('grid-item');
+                categoryCard.onclick = () => openPopup(categoryId);
+
+                const icon = document.createElement('i');
+                icon.classList.add('fas', 'fa-folder'); // Cambia el icono según prefieras
+                categoryCard.appendChild(icon);
+
+                const title = document.createElement('p');
+                title.textContent = category.title;
+                categoryCard.appendChild(title);
+
+                container.appendChild(categoryCard);
+            }
+        }
+
+        // Si no hay resultados, muestra un mensaje
+        if (container.innerHTML === '') {
+            const noResults = document.createElement('p');
+            noResults.textContent = 'No se encontraron resultados.';
+            noResults.style.color = 'white';
+            container.appendChild(noResults);
+        }
+    }
+
+    // Evento de entrada en el campo de búsqueda
+    document.getElementById('searchBar').addEventListener('input', searchResources);
+</script>
+</body>
+</html>

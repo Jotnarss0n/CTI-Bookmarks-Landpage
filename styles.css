@@ -1,0 +1,130 @@
+body {
+    background-color: #121212;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: #1f1f1f;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    color: #00ffab;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: 1px solid #00ffab;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+nav a:hover {
+    background: #00ffab;
+    color: #121212;
+}
+
+#searchBar {
+    margin-top: 10px;
+    padding: 10px;
+    width: 80%;
+    border: none;
+    border-radius: 5px;
+}
+
+.category {
+    padding: 20px;
+}
+
+.accordion {
+    margin-top: 10px;
+}
+
+.accordion-button {
+    background: #222;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.accordion-content {
+    display: none;
+    padding: 10px;
+    border-top: 1px solid #333;
+}
+
+.accordion-content a {
+    display: block;
+    text-decoration: none;
+    color: #00ffab;
+    margin-bottom: 5px;
+}
+
+.accordion-content a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: #1f1f2e;
+    border-radius: 10px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+    width: 50%;
+    max-height: 70%;
+    overflow-y: auto;
+    padding: 20px;
+    z-index: 1000;
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.popup.show {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+    display: none;
+}
+
+.popup-overlay.show {
+    display: block;
+}
+
+footer {
+    background: #1f1f1f;
+    text-align: center;
+    padding: 10px;
+    margin-top: 20px;
+    font-size: 0.8rem;
+}
